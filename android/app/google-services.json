@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "694151618700",
+    "project_id": "ai-tour-guide-98294",
+    "storage_bucket": "ai-tour-guide-98294.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694151618700:android:3661494931118134851ba9",
+        "android_client_info": {
+          "package_name": "com.example.ai_tour_guide"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZh0wj-947ZuU76Rx2j4PaoiSXc5sTowI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
