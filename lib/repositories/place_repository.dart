@@ -1,20 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/place_model.dart';
 
 class PlaceRepository {
-  /// Lấy danh sách Place từ Firestore theo tên collection
-  static Future<List<PlaceModel>> getPlaces(String collectionName) async {
-    try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection(collectionName)
-          .get();
+  // Kết nối với kho dữ liệu Firestore
+  final _supabase = Supabase.instance.client;
 
-      return querySnapshot.docs
-          .map((doc) => PlaceModel.fromMap(doc.data()))
-          .toList();
+  Future<List<PlaceModel>> getPlaces() async {
+    try {
+      // 1. Chạy lên mây, tìm thư mục tên là 'places' và lấy hết tài liệu về
+      final List<dynamic> response = await _supabase.from('places').select().order('display_order', ascending: true);
+      
+      // 2. Chuyển đổi từng tài liệu lấy được thành PlaceModel
+      return response.map((data) => PlaceModel.fromMap(data)).toList();
+      
     } catch (e) {
-      // Bạn có thể log lỗi hoặc throw lại tùy theo nhu cầu
-      rethrow;
+      // print("Error when map data from supabase: $e");
+      return []; // Trả về mảng rỗng nếu có lỗi (tránh crash app)
     }
   }
 }
