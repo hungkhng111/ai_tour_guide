@@ -14,13 +14,14 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isSystemMessage = message == "[Bạn đã dừng câu trả lời này...]";
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isUser ? Colors.teal.withValues(alpha: 0.2) : Colors.grey.shade200,
+          color: isUser ? Colors.teal.withValues(alpha: 0.8) : Colors.grey.shade200,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(12),
             topRight: const Radius.circular(12),
@@ -32,10 +33,18 @@ class ChatBubble extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(message),
+            SelectableText(
+              message,
+              style: TextStyle(
+                color: isUser ? Colors.white : (isSystemMessage ? Colors.black38 : Colors.black87),
+                fontSize: 15,
+                fontStyle: isSystemMessage ? FontStyle.italic : FontStyle.normal,
+              ),
+            ),
             ?childWidget,
           ],
         ),
+        
       ),
     );
   }

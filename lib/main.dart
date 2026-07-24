@@ -1,20 +1,29 @@
+import 'package:ai_tour_guide/services/ai_service.dart';
 import 'package:flutter/material.dart';
-// 📦 Import các thư viện cốt lõi của Firebase đám mây
-import 'package:firebase_core/firebase_core.dart';
-// 🛠️ Import file cấu hình tự động tạo ra bởi FlutterFire CLI
-import 'firebase_options.dart';
-// 🗂️ Import cấu trúc dữ liệu Model mà chúng ta đã tách ra file riêng
+import 'package:get/get.dart';
+
 import 'screens/ai_chat_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/profile_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // 1. Bắt buộc import
+import 'widgets/floating_npc_widget.dart'; // Thêm dòng này để gọi NPC
+
+import 'controllers/theme_controller.dart';
 // Ham main - Diem khoi chay dau tien va bat buoc cua ung dung flutter
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  await dotenv.load(fileName: ".env");
+
+  await Supabase.initialize(
+    url: 'https://amjhegokblbcwkvglois.supabase.co',
+    publishableKey: 'sb_publishable_HHdq1D2CdAspvCH_twz4OA_eZlHK1gd',
   );
 
+  Get.put(ThemeController());
+  // Dang ky 1 AIService duy nhat dung chung cho toan app
+  Get.put(AIService());
   runApp(const AITourGuideApp());
 }
 
@@ -25,17 +34,20 @@ class AITourGuideApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    // Sau khi cap nhat tinh nang doi mau nen se mo lai
+    // final themeController = Get.find<ThemeController>();
+
+    return GetMaterialApp(
       title: 'AI Tour Guide',
       debugShowCheckedModeBanner: false, // An dong chu Debug trong ung dung
-      theme: ThemeData(
-        // Cau hinh bang mau chu dao (Teal lam mau goc)
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
-          primary: Colors.teal,
-          secondary: Colors.amber,
-        ),
-        useMaterial3: true,
+        theme: ThemeData(
+          // Cau hinh bang mau chu dao (Teal lam mau goc)
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.teal,
+            primary: Colors.teal,
+            secondary: Colors.amber,
+          ),
+          useMaterial3: true,
       ),
       home: const MainNavigationShell(), // Chi dinh man hinh chinh khi mo app len
     );
@@ -66,6 +78,15 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: 'AI Chat'),
     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    Get.find<AIService>().wakeUp();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FloatingNPCManager.show(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

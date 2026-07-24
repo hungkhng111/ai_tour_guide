@@ -1,24 +1,43 @@
 class PlaceModel {
-  final String title;
-  final String rating;
-  final String tags;
-  final String imageUrl;
+  final String id;
+  final String name;
+  final String date;
+  final String openHour; // Đổi từ openTime
+  final String location;
+  final String price; // Đã có sẵn, giữ nguyên
+  final List<String> imgPaths; // Đổi từ imagePaths
+  final String shortDes; // Mới thêm
+  final String description;
 
   PlaceModel({
-    required this.title,
-    required this.rating,
-    required this.tags,
-    required this.imageUrl,
+required this.id,
+    required this.name,
+    required this.date,
+    required this.openHour,
+    required this.location,
+    required this.price,
+    required this.imgPaths,
+    required this.shortDes,
+    required this.description,
   });
 
-  // Ham dac biet (factory) dung de bien doi du lieu nhan ve tu firebase (dang map) 
-  // thanh mot Doi tuong Dart (Object) giup giao dien hien thi duoc ngay
-  factory PlaceModel.fromMap(Map<String, dynamic> map) {
+
+
+// Hàm này lấy dữ liệu từ Supabase (chuẩn Map) và biến nó thành Đối tượng PlaceModel
+factory PlaceModel.fromMap(Map<String, dynamic> data) {
     return PlaceModel(
-      title: map['title'] ?? '',
-      rating: map['rating'] ?? '0.0',
-      tags: map['tags'] ?? '',
-      imageUrl: map['imageUrl'] ?? '',
+      id: data['id'].toString(),
+      name: data['name'] ?? 'Chưa cập nhật tên',
+      date: data['date'] ?? 'Chưa cập nhật ngày',
+      openHour: data['openHour'] ?? 'Chưa cập nhật giờ',
+      location: data['location'] ?? 'Chưa cập nhật địa điểm',
+      price: data['price'] ?? '0đ',
+      imgPaths: data['imgPaths'] != null 
+          ? List<String>.from(data['imgPaths']) 
+          : [],
+      shortDes: data['shortDes'] ?? 'Chưa có mô tả ngắn',
+      description: data['description'] ?? 'Chưa có mô tả chi tiết',
     );
   }
+
 }
